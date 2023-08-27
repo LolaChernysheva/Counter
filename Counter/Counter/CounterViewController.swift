@@ -25,6 +25,7 @@ class CounterViewController: UIViewController {
                 counterValue = 0
             }
             configureLabel()
+            setMinusButtonEnabled()
         }
     }
 
@@ -34,29 +35,24 @@ class CounterViewController: UIViewController {
         super.viewDidLoad()
         configureView()
         historyTextView.delegate = self
+        setMinusButtonEnabled()
     }
     
     //MARK: - IBActions
     
     @IBAction func resetButtonTapped(_ sender: Any) {
-        counterValue = 0
-        let currentTime = getCurrentTime()
-        let newLine = "[\(currentTime)]: значение сброшено \n"
-        appendNew(line: newLine)
+        updateCounter(by: -counterValue, with: "значение сброшено")
     }
     
     @IBAction func plusButtonTapped(_ sender: Any) {
-        counterValue += 1
-        let currentTime = getCurrentTime()
-        let newLine = "[\(currentTime)]: cчетчик увеличен на 1 \n"
-        appendNew(line: newLine)
+        updateCounter(by: 1, with: "cчетчик увеличен на")
+        addScaleAnimation(into: plusButton)
     }
     
     @IBAction func minusButtonTapped(_ sender: Any) {
-        counterValue -= 1
-        let currentTime = getCurrentTime()
-        let newLine = "[\(currentTime)]: cчетчик уменьшен на 1 \n"
-        appendNew(line: newLine)
+        updateCounter(by: -1, with: "cчетчик уменьшен на")
+        addScaleAnimation(into: minusButton)
+
     }
     
     //MARK: - Private methods
@@ -65,10 +61,14 @@ class CounterViewController: UIViewController {
         counterLabel.text = "Значение счетчика: \(counterValue)"
     }
     
+    private func setMinusButtonEnabled(){
+        minusButton.isUserInteractionEnabled = counterValue <= 0 ? false : true
+    }
+    
     private func configureView() {
         configureLabel()
-        plusButton.layer.cornerRadius = 10
-        minusButton.layer.cornerRadius = 10
+        plusButton.layer.cornerRadius = Metrics.cornerRadiusValue
+        minusButton.layer.cornerRadius = Metrics.cornerRadiusValue
     }
     
     private func getCurrentTime() -> String {
@@ -86,6 +86,23 @@ class CounterViewController: UIViewController {
         historyTextView.text.append(text)
         scrollToBottom()
     }
+    
+    private func updateCounter(by value: Int, with message: String) {
+        counterValue += value
+        let currentTime = getCurrentTime()
+        let newLine = "[\(currentTime)]: \(message) \(value)\n"
+        appendNew(line: newLine)
+    }
+    
+    private func addScaleAnimation(into button: UIButton) {
+        UIView.animate(withDuration: Metrics.duration, animations: {
+            button.transform = CGAffineTransform(scaleX: Metrics.scale, y: Metrics.scale)
+        }) { _ in
+            UIView.animate(withDuration: Metrics.duration) {
+                button.transform = .identity
+            }
+        }
+    }
 }
 
 extension CounterViewController:  UITextViewDelegate {
@@ -94,3 +111,8 @@ extension CounterViewController:  UITextViewDelegate {
     }
 }
 
+fileprivate struct Metrics {
+    static let cornerRadiusValue: CGFloat = 10
+    static let duration = 0.2
+    static let scale = 1.2
+}
