@@ -9,16 +9,6 @@ import UIKit
 
 class CounterViewController: UIViewController {
     
-    //MARK: - IBOutlet
-    
-    @IBOutlet weak var counterLabel: UILabel!
-    @IBOutlet weak var plusButton: UIButton!
-    @IBOutlet weak var minusButton: UIButton!
-    @IBOutlet weak var resetCounterButton: UIButton!
-    @IBOutlet weak var historyTextView: UITextView!
-    @IBOutlet weak var counterNumberLabel: UILabel!
-    @IBOutlet weak var cleanHistoryButton: UIButton!
-    
     //MARK: - Properties
     
     private var counterValue: Int = 0 {
@@ -35,6 +25,16 @@ class CounterViewController: UIViewController {
         formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
         return formatter
     }()
+    
+    //MARK: - IBOutlet
+    
+    @IBOutlet private weak var counterLabel: UILabel!
+    @IBOutlet private weak var plusButton: UIButton!
+    @IBOutlet private weak var minusButton: UIButton!
+    @IBOutlet private weak var resetCounterButton: UIButton!
+    @IBOutlet private weak var historyTextView: UITextView!
+    @IBOutlet private weak var counterNumberLabel: UILabel!
+    @IBOutlet private weak var cleanHistoryButton: UIButton!
 
     //MARK: - Life cycle methods
     
@@ -44,32 +44,6 @@ class CounterViewController: UIViewController {
         historyTextView.delegate = self
     }
     
-    //MARK: - IBActions
-    
-    @IBAction func resetButtonTapped(_ sender: Any) {
-        updateCounter(by: -counterValue)
-        log(message: "значение сброшено")
-    }
-    
-    @IBAction func plusButtonTapped(_ sender: Any) {
-        updateCounter(by: 1)
-        log(message: "cчетчик увеличен на 1")
-        addScaleAnimation(into: plusButton)
-    }
-    
-    @IBAction func minusButtonTapped(_ sender: Any) {
-        if counterValue <= 0 {
-            log(message: "попытка уменьшить значение счётчика ниже 0")
-        } else {
-            updateCounter(by: -1)
-            log(message: "cчетчик уменьшен на 1")
-        }
-        addScaleAnimation(into: minusButton)
-    }
-    
-    @IBAction func cleanHistoryButtonTapped(_ sender: Any) {
-        historyTextView.text = "История изменений:\n"
-    }
     //MARK: - Private methods
     
     private func configureLabel() {
@@ -124,6 +98,33 @@ class CounterViewController: UIViewController {
             }
             button.layer.borderColor = button.layer.borderColor?.copy(alpha: Metrics.alpha)
         }
+    }
+    
+    //MARK: - IBActions
+    
+    @IBAction private func resetButtonTapped(_ sender: Any) {
+        updateCounter(by: -counterValue)
+        log(message: "значение сброшено")
+    }
+    
+    @IBAction private func plusButtonTapped(_ sender: Any) {
+        updateCounter(by: 1)
+        log(message: "cчетчик увеличен на 1")
+        addScaleAnimation(into: plusButton)
+    }
+    
+    @IBAction private func minusButtonTapped(_ sender: Any) {
+        if counterValue <= 0 {
+            log(message: "попытка уменьшить значение счётчика ниже 0")
+        } else {
+            updateCounter(by: -1)
+            log(message: "cчетчик уменьшен на 1")
+        }
+        addScaleAnimation(into: minusButton)
+    }
+    
+    @IBAction private func cleanHistoryButtonTapped(_ sender: Any) {
+        historyTextView.text = "История изменений:\n"
     }
 }
 
